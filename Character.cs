@@ -8,18 +8,15 @@ namespace ClosersBasic
 {
     abstract class Character
     {
-        public bool ally;//아군 적군 판별
+        bool ally;//true면 아군
         bool stun = false;//기절 상태
         bool burn = false;//화염피해받는중
         bool electro = false;//전기피해받는중
         bool marked = false;//표식 찍힘
-
-        //적 전용 값
-        static int count = 1;
-        string type;
-
-        string name = null;
-        int level;
+        
+        string name = null;//이름
+        string type;//타입
+        int level=1;//초기 레벨
         int exp;//경험치
         int maxHealth;//최대체력
         int health;//현재체력
@@ -39,10 +36,11 @@ namespace ClosersBasic
         int stunResist;//기절저항
         int burnResist;//화염피해저항
         int electroResist;//전기피해저항
-        int stunRate = 0;
+        int stunRate = 0;//적을 기절시킬 기본 확률
         int burnRate = 0;
         int electroRate = 0;
 
+        //레벨업 당 스텟 증가량
         int maxHealthPerLevel;
         int maxManaPerLevel;
         int adDefPerLevel;
@@ -66,7 +64,7 @@ namespace ClosersBasic
         {
             //기본 스텟
             this.name = name;
-            this.level = level;
+            this.type = type;
             this.exp = 0;
             this.maxHealth = maxHealth;
             this.health = maxHealth;
@@ -85,6 +83,7 @@ namespace ClosersBasic
             this.stunResist = stunResist;
             this.burnResist = burnResist;
             this.electroResist = electroResist;
+
             //레벨업 당 스텟 증가량
             this.maxHealthPerLevel = maxHealthPerLevel;
             this.maxManaPerLevel = maxManaPerLevel;
@@ -102,27 +101,22 @@ namespace ClosersBasic
             this.burnResistPerLevel = burnResistPerLevel;
             this.electroResistPerLevel = electroResistPerLevel;
 
-            this.type = type;
-            if ((this.ally==false)&&(this.type!=null))
+            if(level>1)//인스턴스 생성 레벨이 1보다 높을 경우 스탯값 보정
             {
-                this.name=name + count.ToString();
-                Console.WriteLine(this.name + "소환");
-                count++;
+                this.SetLevel(level);
             }
-        }
-
-        public string Type()
-        {
-            return type;
         }
 
         //레벨업 함수
         public void LevelUp()
         {
             this.level += 1;
-            this.exp = 0;
+            Console.WriteLine(this.name + "가 " + this.level + "레벨로 레벨업했습니다!");
+            this.SubExp(100);
             this.AddMaxHealth(maxHealthPerLevel);
+            this.SetHealth(maxHealth);
             this.AddMaxMana(maxManaPerLevel);
+            this.SetMana(maxMana);
             this.AddAdDef(adDefPerLevel);
             this.AddApDef(apDefPerLevel);
             this.AddAd(adPerLevel);
@@ -139,6 +133,10 @@ namespace ClosersBasic
         }
 
         //스탯 변경 함수
+        public void AddExp(int exp)
+        {
+            this.exp += exp;
+        }
         public void AddMaxHealth(int maxHealth)
         {
             this.maxHealth += maxHealth;
@@ -240,6 +238,14 @@ namespace ClosersBasic
             this.electroRate += electroRate;
         }
 
+        public void SubExp(int exp)
+        {
+            this.exp -= exp;
+            if(this.exp<0)
+            {
+                this.exp = 0;
+            }
+        }
         public void SubMaxHealth(int maxHealth)
         {
             this.maxHealth -= maxHealth;
@@ -623,6 +629,39 @@ namespace ClosersBasic
         {
             this.name = newName;
         }
+        public void SetType(string newType)
+        {
+            this.type = newType;
+        }
+        public void SetAlly(bool allyOrNot)
+        {
+            this.ally = allyOrNot;
+        }
+        public void SetLevel(int level)
+        {
+            this.level = level;
+            this.AddMaxHealth(maxHealthPerLevel * (level-1));
+            this.SetHealth(maxHealth * (level - 1));
+            this.AddMaxMana(maxManaPerLevel * (level - 1));
+            this.SetMana(maxMana * (level - 1));
+            this.AddAdDef(adDefPerLevel * (level - 1));
+            this.AddApDef(apDefPerLevel * (level - 1));
+            this.AddAd(adPerLevel * (level - 1));
+            this.AddAp(apPerLevel * (level - 1));
+            this.AddCritRate(critRatePerLevel * (level - 1));
+            this.AddCritDamage(critDamagePerLevel * (level - 1));
+            this.AddDefBreak(defBreakPerLevel * (level - 1));
+            this.AddSpeed(speedPerLevel * (level - 1));
+            this.AddAccuracy(accuracyPerLevel * (level - 1));
+            this.AddDodge(dodgePerLevel * (level - 1));
+            this.AddStunResist(stunResistPerLevel * (level - 1));
+            this.AddBurnResist(burnResistPerLevel * (level - 1));
+            this.AddElectroResist(electroResistPerLevel * (level - 1));
+        }
+        public void SetExp(int exp)
+        {
+            this.exp = exp;
+        }
         public void SetMaxHealth(int maxHealth)
         {
             this.maxHealth = maxHealth;
@@ -796,35 +835,36 @@ namespace ClosersBasic
             }
         }
 
-        public void StunTrue()
+        //상태값 설정함수
+        public void SetStunTrue()
         {
             this.stun = true;
         }
-        public void BurnTrue()
+        public void SetBurnTrue()
         {
             this.burn = true;
         }
-        public void ElectroTrue()
+        public void SetElectroTrue()
         {
             this.electro = true;
         }
-        public void MarkedTrue()
+        public void SetMarkedTrue()
         {
             this.marked = true;
         }
-        public void StunFalse()
+        public void SetStunFalse()
         {
             this.stun = false;
         }
-        public void BurnFalse()
+        public void SetBurnFalse()
         {
             this.burn = false;
         }
-        public void ElectroFalse()
+        public void SetElectroFalse()
         {
             this.electro = false;
         }
-        public void MarkedFalse()
+        public void SetMarkedFalse()
         {
             this.marked = false;
         }
@@ -868,10 +908,13 @@ namespace ClosersBasic
         }
 
         //스탯 확인 함수
+        //출력
         public void Stat()
         {
             this.WriteName();
+            this.WriteType();
             this.WriteLevel();
+            this.WriteExp();
             this.WriteHealth();
             if (this.maxMana!=0)
             {
@@ -901,14 +944,32 @@ namespace ClosersBasic
             this.WriteElectroResist();
             Console.WriteLine();
         }
-        //출력
         public void WriteName()
         {
             Console.WriteLine(this.name);
         }
+        public void WriteType()
+        {
+            Console.WriteLine("타입:"+this.type);
+        }
+        public void WriteAlly()
+        {
+            if(this.ally==true)
+            {
+                Console.WriteLine(this.name + "은 아군입니다.");
+            }
+            else
+            {
+                Console.WriteLine(this.name + "은 적입니다.");
+            }
+        }
         public void WriteLevel()
         {
             Console.WriteLine("레벨:" + this.level);
+        }
+        public void WriteExp()
+        {
+            Console.WriteLine("경험치:"+this.exp + "/100");
         }
         public void WriteHealth()
         {
@@ -1007,9 +1068,21 @@ namespace ClosersBasic
         {
             return name;
         }
+        public string Type()
+        {
+            return type;
+        }
+        public bool Ally()
+        {
+            return ally;
+        }
         public int Level()
         {
             return level;
+        }
+        public int Exp()
+        {
+            return exp;
         }
         public int MaxHealth()
         {
@@ -1102,108 +1175,146 @@ namespace ClosersBasic
 
         //전투 함수들
         public void Battle(float damageRate, int critRate, int critDamage, int defBreak, int accuracy, int stunRate,
-            int burnRate, int electroRate, bool mark, Character opponent, int phasePower, int cost)
+            int burnRate, int electroRate, bool mark, Character opponent, int phasePower, int cost)//전투할때는 이거 쓰면 됨
         {
-            if(this.name=="제이")
+            if (this.type == "파이터")//제이는 체력소모
             {
                 this.SubHealth(cost);
             }
-            else
+            else//나머지는 마나소모
             {
                 this.SubMana(cost);
             }
 
+            //명중확률 뺑뺑이
             Random random = new Random();
             int hit = random.Next(1, 100);
-            if(this.accuracy+accuracy-opponent.dodge>=hit)
+            if (this.accuracy + accuracy - opponent.dodge >= hit)//명중했으면
             {
-                Console.WriteLine("공격이 적중했습니다!");
-                BattleDamageCalc(damageRate, critRate, critDamage, defBreak, opponent);
-                BattleStunCalc(stunRate, opponent);
-                BattleBurnCalc(burnRate, opponent);
-                BattleElectroCalc(electroRate, opponent);
+                BattleDamageCalc(damageRate, critRate, critDamage, defBreak, stunRate, burnRate, electroRate, opponent, phasePower);//데미지 계산
 
-                if(mark==true)
+                if (mark == true)//표식을 찍는 스킬이면 무조건 표식을 찍음
                 {
-                    opponent.MarkedTrue();
+                    opponent.SetMarkedTrue();
                 }
 
-                if(this.ally==true)
-                {
-                    this.AddPhasePower(phasePower);
-                }
             }
-            else
+            else//아니면 빗나감
             {
                 Console.WriteLine("공격이 빗나갔습니다!");
             }
         }
 
-        public void BattleDamageCalc(float damageRate, int critRate, int critDamage, int defBreak, Character opponent)
+        public void BattleDamageCalc(float damageRate, int critRate, int critDamage, int defBreak, int stunRate,
+            int burnRate, int electroRate, Character opponent, int phasePower)//데미지 계산
         {
+            //상대의 방어력과 자신의 공격력, 스킬계수, 방어 관통력을 사용해 데미지 계산
             int adDamage = (int)((this.ad * damageRate) * (100 / (float)(opponent.adDef + 100 - this.defBreak - defBreak)));
             int apDamage = (int)((this.ap * damageRate) * (100 / (float)(opponent.apDef + 100 - this.defBreak - defBreak)));
             int totalDamage = adDamage + apDamage;
 
+            //치명타 데미지
+            int fatalBlow = (100 + this.critDamage + critDamage) * totalDamage / 100;
+
+            //크리확률 뺑뺑이
             Random random = new Random();
-            int critPossible = random.Next(1, 100);
-
-            int fatalBlow = (100 + this.critDamage + critDamage) * totalDamage;
-
-            if(this.critRate+critRate>=critPossible)
+            int crit = random.Next(1, 100);
+            if(this.critRate+critRate>=crit)//크리 터지면
             {
-                opponent.SubHealth(fatalBlow);
+                Console.WriteLine("치명적인 일격!");
+                opponent.SubHealth(fatalBlow);//치명타 데미지
+                if (this.ally == true)//아군은 위상력이 평소의 2배로 증가
+                {
+                    this.AddPhasePower(phasePower*2);
+                }
             }
-            else
+            else//아니면
             {
-                opponent.SubHealth(totalDamage);
+                Console.WriteLine("공격이 적중했습니다!");
+                opponent.SubHealth(totalDamage);//총합 데미지
+                if (this.ally == true)//원래 올라가는 만큼 위상력 증가
+                {
+                    this.AddPhasePower(phasePower);
+                }
+            }
+
+            if (opponent.health == 0)//만약 이 공격으로 적의 체력이 0이 된다면
+            {
+                Console.WriteLine(opponent.name + "이 쓰러졌습니다!");
+                this.AddExp(opponent.exp);//적 경험치량만큼 경험치 증가
+                while(this.exp>=100)//경험치가 100을 넘기면 레벨업
+                {
+                    LevelUp();
+                }
+            }
+            else//적이 살아있다면 상태이상에 걸릴 확률 결정
+            {
+                BattleStunCalc(stunRate, opponent);
+                BattleBurnCalc(burnRate, opponent);
+                BattleElectroCalc(electroRate, opponent);
             }
         }
-        public void BattleStunCalc(int stunRate,Character opponent)
+        public void BattleStunCalc(int stunRate,Character opponent)//스턴
         {
             int stunPossible = this.stunRate + stunRate - opponent.stunResist;
             Random random = new Random();
             int stun = random.Next(1, 100);
             if(stunPossible>=stun)
             {
-                opponent.stun = true;
+                opponent.SetStunTrue();
                 opponent.WriteStun();
             }
         }
-        public void BattleBurnCalc(int burnRate, Character opponent)
+        public void BattleBurnCalc(int burnRate, Character opponent)//화염
         {
             int burnPossible = this.burnRate + burnRate - opponent.burnResist;
             Random random = new Random();
             int burn = random.Next(1, 100);
             if (burnPossible >= burn)
             {
-                opponent.burn = true;
+                opponent.SetBurnTrue();
                 opponent.WriteBurn();
             }
         }
-        public void BattleElectroCalc(int electroRate, Character opponent)
+        public void BattleElectroCalc(int electroRate, Character opponent)//전기
         {
             int electroPossible = this.electroRate + electroRate - opponent.electroResist;
             Random random = new Random();
             int electro = random.Next(1, 100);
             if (electroPossible >= electro)
             {
-                opponent.electro = true;
+                opponent.SetElectroTrue();
                 opponent.WriteElectro();
             }
         }
 
-        public void StunEffect()
+        public void StunEffect()//스턴상태시 효과
         {
+            if(this.stun==true)
+            {
 
+            }
         }
-        public void BurnEffect()
+        public void BurnEffect()//화염피해시 효과
         {
+            if(this.burn==true)
+            {
 
+            }
         }
-        public void ElectroEffect()
+        public void ElectroEffect()//전기피해시 효과
         {
+            if(this.electro==true)
+            {
 
+            }
+        }
+        public void MarkedEffect()//표식상태시 효과
+        {
+            if(this.marked==true)
+            {
+
+            }
         }
     }
 }

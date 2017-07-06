@@ -16,8 +16,8 @@ namespace ClosersBasic
             adDefPerLevel, apDefPerLevel, adPerLevel, apPerLevel, critRatePerLevel, critDamagePerLevel, defBreakPerLevel, speedPerLevel, accuracyPerLevel,
             dodgePerLevel, stunResistPerLevel, burnResistPerLevel, electroResistPerLevel)
         {
-            this.ally = false;
+            this.SetAlly(false);
         }
-        
+
     }
 }

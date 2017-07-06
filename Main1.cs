@@ -15,11 +15,15 @@ namespace ClosersBasic
 
         static void Main(string[] args)
         {
-            J jay = new J();
-            Scavenger scavenger1 = new Scavenger();
-            Scavenger scavenger2 = new Scavenger();
-            Scavenger scavenger3 = new Scavenger();
+            J jay = new J(3);
+            //J jay2 = new J(1);
+            Scavenger scavenger1 = new Scavenger(1);
+            //Scavenger scavenger2 = new Scavenger(1);
+            //Scavenger scavenger3 = new Scavenger(1);
             jay.Skill1(scavenger1);
+            scavenger1.WriteHealth();
+            jay.Stat();
+            //jay.Skill1(jay2);
         }
     }
 }

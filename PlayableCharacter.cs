@@ -8,15 +8,15 @@ namespace ClosersBasic
 {
     abstract class PlayableCharacter:Character
     {
-        public PlayableCharacter(string name, int level, int maxHealth, int maxMana, int adDef, int apDef, int ad, int ap, int critRate, int critDamage, int defBreak,
+        public PlayableCharacter(string name, string type,int level, int maxHealth, int maxMana, int adDef, int apDef, int ad, int ap, int critRate, int critDamage, int defBreak,
             int speed, int accuracy, int dodge, int stunResist, int burnResist, int electroResist, int maxHealthPerLevel, int maxManaPerLevel, int adDefPerLevel,
             int apDefPerLevel, int adPerLevel, int apPerLevel, int critRatePerLevel, int critDamagePerLevel, int defBreakPerLevel, int speedPerLevel,
-            int accuracyPerLevel, int dodgePerLevel, int stunResistPerLevel, int burnResistPerLevel, int electroResistPerLevel) : base(name, null,level, maxHealth, maxMana,
+            int accuracyPerLevel, int dodgePerLevel, int stunResistPerLevel, int burnResistPerLevel, int electroResistPerLevel) : base(name, type,level, maxHealth, maxMana,
             adDef, apDef, ad, ap, critRate, critDamage, defBreak, speed, accuracy, dodge, stunResist, burnResist, electroResist, maxHealthPerLevel, maxManaPerLevel,
             adDefPerLevel, apDefPerLevel, adPerLevel, apPerLevel, critRatePerLevel, critDamagePerLevel, defBreakPerLevel, speedPerLevel, accuracyPerLevel, 
             dodgePerLevel, stunResistPerLevel, burnResistPerLevel, electroResistPerLevel)
         {
-            this.ally = true;
+            this.SetAlly(true);
         }
 
         //위상력 개방
@@ -30,9 +30,9 @@ namespace ClosersBasic
         //긴급 회피
         public void Evade()
         {
-            this.StunFalse();
-            this.BurnFalse();
-            this.ElectroFalse();
+            this.SetStunFalse();
+            this.SetBurnFalse();
+            this.SetElectroFalse();
         }
 
         public abstract void Passive();
